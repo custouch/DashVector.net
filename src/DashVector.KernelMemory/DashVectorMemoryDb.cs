@@ -73,7 +73,7 @@ public class DashVectorMemoryDb : IMemoryDb
         return result?.OutPut;
     }
 
-    public async IAsyncEnumerable<MemoryRecord> GetListAsync(string index, ICollection<MemoryFilter>? filters = null, int limit = 1, bool withEmbeddings = false,[EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<MemoryRecord> GetListAsync(string index, ICollection<MemoryFilter>? filters = null, int limit = 1, bool withEmbeddings = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var results = await this.client.QueryDocAsync(new DashVector.Models.Requests.QueryDocRequest()
         {
@@ -97,7 +97,7 @@ public class DashVectorMemoryDb : IMemoryDb
         }
     }
 
-    public async IAsyncEnumerable<(MemoryRecord, double)> GetSimilarListAsync(string index, string text, ICollection<MemoryFilter>? filters = null, double minRelevance = 0, int limit = 1, bool withEmbeddings = false,[EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<(MemoryRecord, double)> GetSimilarListAsync(string index, string text, ICollection<MemoryFilter>? filters = null, double minRelevance = 0, int limit = 1, bool withEmbeddings = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var embedding = await this.textEmbedding.GenerateEmbeddingAsync(text, cancellationToken);
         var results = await this.client.QueryDocAsync(new DashVector.Models.Requests.QueryDocRequest()
