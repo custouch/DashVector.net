@@ -116,7 +116,7 @@ namespace DashVector
         /// <param name="collectionName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ResponseBase> DeleteDocAsync(DeleteDocRequest deleteDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        public async Task<ResponseBase<List<DocOpResult>>> DeleteDocAsync(DeleteDocRequest deleteDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
             List<string> functionNames = [FunctionNames.Docs];
 
@@ -124,7 +124,7 @@ namespace DashVector
 
             var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, deleteDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<ResponseBase<List<DocOpResult>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -161,14 +161,14 @@ namespace DashVector
         /// <param name="collectionName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ResponseBase> InsertDocAsync(InsertDocRequest request, string collectionName, CancellationToken cancellationToken = default)
+        public async Task<ResponseBase<List<DocOpResult>>> InsertDocAsync(InsertDocRequest request, string collectionName, CancellationToken cancellationToken = default)
         {
             List<string> functionNames = [FunctionNames.Docs];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<ResponseBase<List<DocOpResult>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -195,14 +195,14 @@ namespace DashVector
         /// <param name="collectionName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ResponseBase> UpdateDocAsync(UpdateDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        public async Task<ResponseBase<List<DocOpResult>>> UpdateDocAsync(UpdateDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
             List<string> functionNames = [FunctionNames.Docs];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Put, apiEndpoint, updateDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<ResponseBase<List<DocOpResult>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace DashVector
         /// <param name="collectionName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ResponseBase> UpsertDocAsync(UpsertDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        public async Task<ResponseBase<List<DocOpResult>>> UpsertDocAsync(UpsertDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
             List<string> functionNames = [FunctionNames.Docs, FunctionNames.Upsert];
 
@@ -220,7 +220,7 @@ namespace DashVector
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, updateDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<ResponseBase<List<DocOpResult>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -355,30 +355,19 @@ namespace DashVector
 
         private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response) where T : ResponseBase
         {
-            try
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var result = JsonSerializer.Deserialize<T>(content)
+                    ?? throw new DashVectorException("Failed to deserialize response");
+
+            if (result.Code != 0)
             {
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                response.EnsureSuccessStatusCode();
-
-                var result = JsonSerializer.Deserialize<T>(content)
-                        ?? throw new DashVectorException("Failed to deserialize response");
-
-                if (result.Code != 0)
-                {
-                    throw new DashVectorException(result.Code, result.Message);
-                }
-
-                return result;
+                throw new DashVectorException(result.Code, result.Message);
             }
-            catch (DashVectorException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new DashVectorException(ex.Message);
-            }
+
+            return result;
         }
     }
 }

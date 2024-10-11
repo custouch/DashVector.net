@@ -14,16 +14,16 @@ namespace DashVector.Models.Requests
         public string GroupByField { get; set; }
 
         /// <summary>
-        /// 最多返回的分组个数，尽力而为参数，一般可以返回group_count个分组。
+        /// 最多返回的分组个数，尽力而为参数，一般可以返回group_count个分组。 (0,64] ，默认为1
         /// </summary>
         [JsonPropertyName("group_count")]
-        public int? GroupCount { get; set; }
+        public int? GroupCount { get; set; } = 1;
 
         /// <summary>
-        /// 每个分组返回group_topk条相似性结果，尽力而为参数，优先级低于group_count。
+        /// 每个分组返回group_topk条相似性结果，尽力而为参数，优先级低于group_count。(0,16], 默认为1
         /// </summary>
         [JsonPropertyName("group_topk")]
-        public int? GroupTopK { get; set; }
+        public int GroupTopK { get; set; } = 1;
 
         /// <summary>
         /// 向量数据
@@ -53,7 +53,7 @@ namespace DashVector.Models.Requests
         /// 是否返回向量数据，默认false
         /// </summary>
         [JsonPropertyName("include_vector")]
-        public bool? IncludeVector { get; set; }
+        public bool? IncludeVector { get; set; } = false;
 
         /// <summary>
         /// 返回field的字段名列表，默认返回所有Fields
