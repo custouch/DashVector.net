@@ -18,5 +18,7 @@ namespace DashVector.Models
 
         public const string Partitions = "partitions";
 
+        public const string GroupBy = "query_group_by";
+
     }
 }

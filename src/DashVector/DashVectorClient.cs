@@ -223,6 +223,21 @@ namespace DashVector
             return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// 分组查询Doc
+        /// </summary>
+        /// <param name="queryGroupByRequest"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<List<GroupDocs>>> QueryGroupByAsync(QueryGroupByRequest queryGroupByRequest, string collectionName, CancellationToken cancellationToken = default)
+        {
+            List<string> functionNames = [FunctionNames.GroupBy];
+            var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
+            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, queryGroupByRequest, cancellationToken).ConfigureAwait(false);
+            return await HandleResponseAsync<ResponseBase<List<GroupDocs>>>(response).ConfigureAwait(false);
+        }
+
         #endregion
 
         #region PartitionService
