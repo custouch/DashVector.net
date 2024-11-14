@@ -11,6 +11,9 @@ namespace DashVector.Models.Requests
     {
         [JsonPropertyName("docs")]
         public List<Doc> Docs { get; set; }
+
+        [JsonPropertyName("partition")]
+        public string? Partition { get; set; }
     }
     public class UpdateDocRequest : InsertDocRequest
     {
