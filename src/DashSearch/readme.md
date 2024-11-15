@@ -1,5 +1,5 @@
-# Dash Search
+ï»¿# Dash Search
 
-½áºÏDashScopeµÄ text-embedding-v3 Ä£ĞÍºÍ DashVector ÏòÁ¿¼ìË÷·şÎñ£¬ÊµÏÖÒ»¸öÍ¨ÓÃµÄÎÄ±¾´æ´¢ºÍ¼ìË÷·şÎñ¡£
+ç»“åˆDashScopeçš„ text-embedding-v3 æ¨¡å‹å’Œ DashVector å‘é‡æ£€ç´¢æœåŠ¡ï¼Œå®ç°ä¸€ä¸ªé€šç”¨çš„æ–‡æœ¬å­˜å‚¨å’Œæ£€ç´¢æœåŠ¡ã€‚
 
 
