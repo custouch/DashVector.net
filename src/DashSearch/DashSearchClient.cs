@@ -76,12 +76,12 @@ namespace DashSearch
         /// Creates a new partition in a collection.
         /// </summary>
         /// <param name="collectionName">Name of the collection.</param>
-        /// <param name="partion">Name of the partition.</param>
-        public async Task CreatePartionAsync(string collectionName, string partion)
+        /// <param name="partition">Name of the partition.</param>
+        public async Task CreatePartitionAsync(string collectionName, string partition)
         {
             await _vectorStore.CreatePartitionAsync(new DashVector.Models.Requests.CreatePartitionRequest()
             {
-                name = partion
+                name = partition
             }, collectionName);
         }
 
@@ -90,9 +90,9 @@ namespace DashSearch
         /// </summary>
         /// <param name="collectionName">Name of the collection.</param>
         /// <param name="record">Record to add.</param>
-        /// <param name="partion">Optional partition name.</param>
+        /// <param name="partition">Optional partition name.</param>
         /// <param name="token">Cancellation token.</param>
-        public async Task AddRecordAsync(string collectionName, DashSearchRecord record, string? partion = null, CancellationToken token = default)
+        public async Task AddRecordAsync(string collectionName, DashSearchRecord record, string? partition = null, CancellationToken token = default)
         {
             var (embeddings, sparse_embedding) = await GenerateEmbeddingAsync(record.Content);
 
@@ -111,7 +111,7 @@ namespace DashSearch
                                  Fields = fields
                              }
                      ],
-                Partition = partion
+                Partition = partition
             }, collectionName, token);
         }
 
@@ -121,11 +121,11 @@ namespace DashSearch
         /// <param name="collectionName">Name of the collection.</param>
         /// <param name="query">Search query.</param>
         /// <param name="topK">Number of top results to return.</param>
-        /// <param name="partion">Optional partition name.</param>
+        /// <param name="partition">Optional partition name.</param>
         /// <param name="tagFilters">Optional tag filters.</param>
         /// <param name="token">Cancellation token.</param>
         /// <returns>List of matching records.</returns>
-        public async Task<List<DashSearchRecord>> SearchAsync(string collectionName, string query, int topK = 5, string? partion = null, Dictionary<string, string>? tagFilters = null, CancellationToken token = default)
+        public async Task<List<DashSearchRecord>> SearchAsync(string collectionName, string query, int topK = 5, string? partition = null, Dictionary<string, string>? tagFilters = null, CancellationToken token = default)
         {
             var (embeddings, sparse_embedding) = await GenerateEmbeddingAsync(query);
 
@@ -136,7 +136,7 @@ namespace DashSearch
                 Vector = embeddings,
                 SparseVector = sparse_embedding,
                 TopK = topK,
-                Partition = partion,
+                Partition = partition,
                 Filter = filter
             }, collectionName, token);
 
