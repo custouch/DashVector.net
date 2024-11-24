@@ -61,7 +61,10 @@ foreach (var poem in poems)
 Console.WriteLine("Records added to collection.");
 
 
-var searchResults = await dashSearchClient.SearchAsync(collectionName, "床前明月光");
+var searchResults = await dashSearchClient.SearchAsync(collectionName, "床前明月光", tagFilters: new Dictionary<string, string>()
+{
+    ["title"] = "静夜思"
+});
 
 
 foreach (var result in searchResults)

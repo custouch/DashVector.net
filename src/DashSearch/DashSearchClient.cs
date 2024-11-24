@@ -129,7 +129,7 @@ namespace DashSearch
         {
             var (embeddings, sparse_embedding) = await GenerateEmbeddingAsync(query);
 
-            var filter = tagFilters == null ? null : string.Join("and", tagFilters.Select(x => $" {x.Key}:{x.Value} "));
+            var filter = tagFilters == null ? null : string.Join("and", tagFilters.Select(x => $" {x.Key}=\"{x.Value}\" "));
 
             var results = await _vectorStore.QueryDocAsync(new DashVector.Models.Requests.QueryDocRequest()
             {
